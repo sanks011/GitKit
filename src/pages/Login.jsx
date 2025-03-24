@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Loader2 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Loader2, Github } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { toast } from 'react-hot-toast';
 
@@ -48,29 +49,67 @@ const Login = () => {
 
   return (
     <div className="min-h-screen bg-[#0d1117] flex items-center justify-center px-4">
-      <div className="max-w-md w-full space-y-8 bg-[#161b22] p-8 rounded-lg shadow-xl">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="max-w-md w-full space-y-8 bg-[#161b22] p-8 rounded-lg shadow-xl border border-gray-800/50 backdrop-blur-xl"
+      >
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-white mb-2">Welcome to GitKit</h2>
-          <p className="text-gray-400">Connect your GitHub account to get started</p>
+          <motion.h1 
+            className="text-3xl font-bold text-white mb-2 font-display"
+            initial={{ y: -20 }}
+            animate={{ y: 0 }}
+            transition={{ delay: 0.1, duration: 0.5 }}
+          >
+            Welcome to GitKit
+          </motion.h1>
+          <motion.p 
+            className="text-gray-400 font-display"
+            initial={{ y: -20 }}
+            animate={{ y: 0 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+          >
+            Connect your GitHub account to get started
+          </motion.p>
         </div>
         
-        <button
-          onClick={handleGitHubLogin}
-          disabled={isLoading}
-          className="w-full flex items-center justify-center px-4 py-3 border border-transparent text-base font-medium rounded-md text-white bg-[#238636] hover:bg-[#2ea043] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#238636] transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+        <motion.div
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
         >
-          {isLoading ? (
-            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-          ) : (
-            <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
-              <path fillRule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.604-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.464-1.11-1.464-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.137 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z" clipRule="evenodd" />
-            </svg>
-          )}
-          {isLoading ? 'Connecting...' : 'Continue with GitHub'}
-        </button>
-      </div>
+          <motion.button
+            onClick={handleGitHubLogin}
+            disabled={isLoading}
+            className="w-full flex items-center justify-center px-4 py-3 border border-transparent text-base font-medium rounded-lg text-white relative overflow-hidden group font-display"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <span className="relative z-10 flex items-center">
+              {isLoading ? (
+                <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+              ) : (
+                <Github className="w-5 h-5 mr-2" />
+              )}
+              {isLoading ? 'Connecting...' : 'Continue with GitHub'}
+            </span>
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-blue-700 opacity-100 transition-opacity duration-300" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_var(--x,50%)_var(--y,50%),rgba(88,166,255,0.8),transparent_70%)] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          </motion.button>
+        </motion.div>
+
+        <motion.div 
+          className="text-center text-sm text-gray-500"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4, duration: 0.5 }}
+        >
+          By continuing, you agree to our Terms of Service and Privacy Policy
+        </motion.div>
+      </motion.div>
     </div>
   );
 };
 
-export default Login; 
+export default Login;

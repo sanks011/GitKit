@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import '../styles/fonts.css';
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, X, Github, Home, BarChart2, User, Loader2 } from 'lucide-react';
+import { Menu, X, Github, Home, BarChart2, User, Loader2, LogOut, Settings } from 'lucide-react';
 import { auth } from '../firebase';
 import { signOut } from 'firebase/auth';
 import { useAuth } from '../contexts/AuthContext';
@@ -13,9 +13,11 @@ const Navbar = ({ scrolled, headingRefs }) => {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const logoRef = useRef(null);
+  const profileRef = useRef(null);
   const scrollTimeout = useRef(null);
   const location = useLocation();
   const navigate = useNavigate();
@@ -23,6 +25,8 @@ const Navbar = ({ scrolled, headingRefs }) => {
   const handleLogout = async () => {
     try {
       await logout();
+      toast.success('Logged out successfully');
+      navigate('/');
     } catch (error) {
       console.error('Logout error:', error);
       toast.error('Failed to logout');
@@ -81,17 +85,25 @@ const Navbar = ({ scrolled, headingRefs }) => {
       });
     };
 
+    const handleClickOutside = (event) => {
+      if (profileRef.current && !profileRef.current.contains(event.target)) {
+        setIsProfileMenuOpen(false);
+      }
+    };
+
     // Initialize body class on component mount
     document.body.classList.add('navbar-visible');
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('scrollToTop', scrollToTop);
+    document.addEventListener('mousedown', handleClickOutside);
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('scrollToTop', scrollToTop);
+      document.removeEventListener('mousedown', handleClickOutside);
       
       // Clean up body classes when component unmounts
       document.body.classList.remove('navbar-visible');
@@ -168,15 +180,63 @@ const Navbar = ({ scrolled, headingRefs }) => {
                     </Link>
                   </motion.div>
                   <motion.div
-                    className="w-10 h-10 rounded-full overflow-hidden cursor-pointer"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
+                    className="relative"
+                    ref={profileRef}
                   >
-                    <img
-                      src={user.photoURL || `https://ui-avatars.com/api/?name=${user.displayName || 'User'}&background=random`}
-                      alt={user.displayName || 'User'}
-                      className="w-full h-full object-cover"
-                    />
+                    <motion.div
+                      className="w-10 h-10 rounded-full overflow-hidden cursor-pointer border-2 border-transparent hover:border-blue-500 transition-colors duration-300"
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
+                    >
+                      <img
+                        src={user.photoURL || `https://ui-avatars.com/api/?name=${user.displayName || 'User'}&background=random`}
+                        alt={user.displayName || 'User'}
+                        className="w-full h-full object-cover"
+                      />
+                    </motion.div>
+                    
+                    {/* Profile Dropdown Menu */}
+                    <AnimatePresence>
+                      {isProfileMenuOpen && (
+                        <motion.div
+                          initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                          transition={{ duration: 0.2 }}
+                          className="absolute right-0 mt-2 w-48 bg-[#161b22] rounded-lg shadow-lg overflow-hidden border border-gray-800/50 backdrop-blur-xl z-50"
+                        >
+                          <div className="py-1">
+                            <div className="px-4 py-2 border-b border-gray-800/50">
+                              <p className="text-sm font-medium text-white truncate font-display">
+                                {user.displayName || 'User'}
+                              </p>
+                              <p className="text-xs text-gray-400 truncate">
+                                {user.email}
+                              </p>
+                            </div>
+                            <Link 
+                              to="/dashboard" 
+                              className="flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-blue-600/10 hover:text-white transition-colors font-display"
+                              onClick={() => setIsProfileMenuOpen(false)}
+                            >
+                              <User className="w-4 h-4 mr-2" />
+                              Profile
+                            </Link>
+                            <button 
+                              onClick={() => {
+                                handleLogout();
+                                setIsProfileMenuOpen(false);
+                              }}
+                              className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-blue-600/10 hover:text-white transition-colors font-display"
+                            >
+                              <LogOut className="w-4 h-4 mr-2" />
+                              Sign out
+                            </button>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </motion.div>
                 </>
               ) : (
@@ -274,7 +334,10 @@ const Navbar = ({ scrolled, headingRefs }) => {
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                           >
-                            <span className="relative z-10 font-display">Sign Out</span>
+                            <span className="relative z-10 font-display flex items-center justify-center">
+                              <LogOut className="w-4 h-4 mr-2" />
+                              Sign Out
+                            </span>
                             <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-blue-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                             <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(88,166,255,0.4),transparent_70%)] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                           </motion.button>
