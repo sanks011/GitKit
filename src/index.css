@@ -1,0 +1,84 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    font-family: 'Inter', sans-serif;
+    @apply bg-[#0d1117] m-0 p-0;
+  }
+}
+
+@layer components {
+  .glow-text {
+    @apply transition-all duration-500;
+  }
+
+  .glow-text:hover {
+    text-shadow: 0 0 10px #58a6ff, 0 0 20px #58a6ff, 0 0 30px #58a6ff;
+  }
+
+  .random-glow {
+    animation: randomGlow 4s infinite;
+  }
+
+  .glow-effect {
+    @apply transition-all duration-300;
+  }
+
+  .glow-effect:hover {
+    box-shadow: 0 0 10px #58a6ff, 0 0 20px #58a6ff;
+  }
+
+  .github-gradient {
+    background: linear-gradient(180deg, #161b22 0%, #0d1117 100%);
+  }
+}
+
+@keyframes randomGlow {
+  0%, 100% {
+    text-shadow: none;
+  }
+  25% {
+    text-shadow: 0 0 10px #58a6ff, 0 0 20px #58a6ff;
+  }
+  50% {
+    text-shadow: none;
+  }
+  75% {
+    text-shadow: 0 0 15px #58a6ff;
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 5px #58a6ff40;
+  }
+  50% {
+    box-shadow: 0 0 15px #58a6ff80;
+  }
+}
+
+.pulse-glow {
+  animation: pulseGlow 2s infinite;
+}
+
+/* Add to styles/global.css or create a new file */
+body.navbar-visible {
+  padding-top: 64px; /* Height of your navbar (h-16 = 64px) */
+  transition: padding-top 0.5s;
+}
+
+body.navbar-hidden {
+  padding-top: 0;
+  transition: padding-top 0.5s;
+}
+
+/* Optional: Add smooth transition for content */
+#root > div {
+  transition: margin-top 0.5s;
+}
+
+.nav-content-wrapper {
+  padding-top: 64px; /* This should match your navbar height */
+}
