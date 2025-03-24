@@ -6,6 +6,7 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',  // Allow external access (required for Render)
     port: process.env.PORT || 5173,  // Use Render's assigned port
+    allowedHosts: ['gitkit.onrender.com'],
     proxy: {
       '/api': {
         target: 'https://gitkit-backend.onrender.com', // Adjust this if your backend is hosted elsewhere
