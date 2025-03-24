@@ -3,7 +3,7 @@ import { toast } from 'react-hot-toast';
 
 const api = axios.create({
   baseURL: '',  // Use relative URLs
-  timeout: 30000,
+  timeout: 100000,
   headers: {
     'Content-Type': 'application/json'
   }
