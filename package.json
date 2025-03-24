@@ -22,7 +22,7 @@
     "express": "^4.21.2",
     "firebase": "^10.8.0",
     "framer": "^2.4.1",
-    "framer-motion": "^12.5.0",
+    "framer-motion": "^10.13.1",
     "lru-cache": "^11.0.2",
     "lucide-react": "^0.483.0",
     "motion": "^12.5.0",
