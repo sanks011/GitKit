@@ -24,3 +24,9 @@ dist-ssr
 *.sw?
 backend/.vscode
 backend
+.env
+.env.*
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
