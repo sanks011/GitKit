@@ -6,7 +6,9 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
-
+.env
+*.env
+*.local
 node_modules
 dist
 dist-ssr
@@ -30,3 +32,11 @@ backend
 .env.development.local
 .env.test.local
 .env.production.local
+
+/.env
+/.env.*
+/.env.local
+/.env.development.local
+/.env.test.local
+/.env.production.local
+# MacOS
