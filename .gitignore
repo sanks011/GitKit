@@ -40,3 +40,8 @@ backend
 /.env.test.local
 /.env.production.local
 # MacOS
+
+.env
+# macOS
+/.env
+/.env.*
